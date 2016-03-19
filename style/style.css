@@ -20,3 +20,7 @@
 form .name {
     text-transform: capitalize;
 }
+
+.name-row {
+    /*width: 50px;*/
+}

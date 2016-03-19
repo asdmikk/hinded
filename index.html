@@ -31,8 +31,8 @@
 				<span class="mdl-layout-title">Grades</span>
 			</div>
 			<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-				<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Tab 1</a>
-				<a href="#fixed-tab-2" class="mdl-layout__tab">Tab 2</a>
+				<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Grades</a>
+				<a href="#fixed-tab-2" class="mdl-layout__tab">Groups</a>
 				<a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
 			</div>
 		</header>
@@ -117,9 +117,32 @@
 				</div>
 			</div>
 		</main>
-		<main ng-controller="MainCtrl as main" ng-show="app.currentUser" class="mdl-layout__content">
+		<main ng-show="app.currentUser" class="mdl-layout__content">
 			<section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
-				<div class="page-content"><!-- Your content goes here -->Jou</div>
+				<div class="page-content mdl-grid">
+					<!--<input type="text" placeholder="Search.." ng-model="query">-->
+
+					<div class="mdl-textfield mdl-js-textfield mdl-cell mdl-cell--12-col">
+						<input class="mdl-textfield__input" type="text" id="sample1" ng-model="query">
+						<label class="mdl-textfield__label" for="sample1">Search...</label>
+					</div>
+
+					<table ng-controller="TableCtrl as tbl" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+						<thead>
+						<tr>
+							<th class="mdl-data-table__cell{{$index === 0? '--non-numeric' : ''}}" ng-repeat="header in tbl.headers">{{header}}</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="student in (tbl.students | filter:query)" ng-click="tbl.edit(student)">
+							<td class="mdl-data-table__cell--non-numeric ">{{student.firstName}} {{student.lastName}}</td>
+							<td>{{student.code}}</td>
+							<td ng-repeat="ass in tbl.assignments">{{student.grades[ass]}}</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
 			</section>
 			<section class="mdl-layout__tab-panel" id="fixed-tab-2">
 				<div class="page-content"><!-- Your content goes here -->Mis</div>
