@@ -4,19 +4,42 @@ app.run(function ($rootScope) {
 	$rootScope.currenUser;
 	$rootScope.assignments = ['1 KT', '2 KT', 'Lisapunktid', 'Eksam'];
 	var grades = {
-		'1 KT': 1,
+		'1 KT': 5,
 		'2 KT': 2,
-		'Lisapunktid': 0,
+		'Lisapunktid': 3,
+		'Eksam': 7
+	};
+	var grades1 = {
+		'1 KT': 1,
+		'2 KT': 4,
+		'Lisapunktid': 5,
 		'Eksam': 5
 	};
+	var grades2 = {
+		'1 KT': 7,
+		'2 KT': 0,
+		'Lisapunktid': 9,
+		'Eksam': 1
+	};
+	var grades3 = {
+		'1 KT': 11,
+		'2 KT': 4,
+		'Lisapunktid': 0,
+		'Eksam': 7
+	};
+	var grades4 = {
+		'1 KT': 4,
+		'2 KT': 4,
+		'Lisapunktid': 5,
+		'Eksam': 5
+	};
+
 	$rootScope.users = [
 		{id: 312123, email: 'm@m.mm', firstName: 'Mikk', lastName: 'K', pass: 's', status: 'student', code: 123123, grades: grades},
-		{id: 312133, email: 'm@m1.mm', firstName: 'Paul', lastName: 'K', pass: 's', status: 'student', code: 123523, grades: grades},
-		{id: 312123, email: 'm@m2.mm', firstName: 'Jeesus', lastName: 'K', pass: 's', status: 'student', code: 123153, grades: grades},
-		{id: 312223, email: 'm@m3.mm', firstName: 'Roberta', lastName: 'K', pass: 's', status: 'student', code: 126123, grades: grades},
-		{id: 312123, email: 'm@m4.mm', firstName: 'Roberto', lastName: 'K', pass: 's', status: 'student', code: 123723, grades: grades},
-		{id: 312343, email: 'm@m5.mm', firstName: 'Joujou', lastName: 'K', pass: 's', status: 'student', code: 153123, grades: grades},
-		{id: 312323, email: 'm@m6.mm', firstName: 'Mikk', lastName: 'K', pass: 's', status: 'student', code: 123723, grades: grades},
+		{id: 312133, email: 'm@m1.mm', firstName: 'Paul', lastName: 'K', pass: 's', status: 'student', code: 123523, grades: grades1},
+		{id: 412123, email: 'm@m2.mm', firstName: 'Jeesus', lastName: 'K', pass: 's', status: 'student', code: 123153, grades: grades2},
+		{id: 312223, email: 'm@m3.mm', firstName: 'Roberta', lastName: 'K', pass: 's', status: 'student', code: 126123, grades: grades3},
+		{id: 312124, email: 'm@m4.mm', firstName: 'Roberto', lastName: 'K', pass: 's', status: 'student', code: 123723, grades: grades4},
 		{
 			id: 123421, email: 't@t.tt', firstName: 'Teacher', lastName: 'T', pass: 't', status: 'teacher'
 		}];
@@ -114,13 +137,17 @@ app.controller('TableCtrl', function ($rootScope) {
 	//this.headers = ['Name', 'Student code'].concat(this.assignments);
 
 	this.edit = function (student) {
-		return;
+		console.log('srucent', student);
 		if (this.newAssPopupVisible) {
 			return;
 		}
 		this.currentStudent = student;
-		this.editPopupVisible = true;
+		//this.editPopupVisible = true;
 
+	};
+
+	this.updateStudent = function (student, ass, grade) {
+		student.grades[ass] = grade;
 	};
 
 	this.showPopup = function (name) {
