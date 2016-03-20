@@ -136,6 +136,12 @@ app.controller('TableCtrl', function ($rootScope) {
 	this.assignments = $rootScope.assignments;
 	//this.headers = ['Name', 'Student code'].concat(this.assignments);
 
+	this.tab = 'all';
+
+	this.setTab = function (tab) {
+		this.tab = tab;
+	};
+
 	this.edit = function (student) {
 		console.log('srucent', student);
 		if (this.newAssPopupVisible) {
@@ -144,6 +150,14 @@ app.controller('TableCtrl', function ($rootScope) {
 		this.currentStudent = student;
 		//this.editPopupVisible = true;
 
+	};
+
+	this.selected = [];
+	this.select = function (student) {
+		if (!_.contains(this.selected, student)) {
+			this.selected.push(student);
+			console.log(this.selected);
+		}
 	};
 
 	this.updateStudent = function (student, ass, grade) {
@@ -159,9 +173,8 @@ app.controller('TableCtrl', function ($rootScope) {
 	};
 
 	this.create = function () {
-		if (this.newAssPopupVisible) {
+		if (this.newAssName) {
 			$rootScope.assignments.push(this.newAssName);
-			this.assignments = $rootScope.assignments;
 			this.newAssPopupVisible = false;
 		}
 	};

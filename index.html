@@ -17,6 +17,7 @@
 	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>-->
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="bower_components/underscore/underscore-min.js"></script>
 	<script src="js/app.js"></script>
 
 	<title>Grades</title>
@@ -31,7 +32,7 @@
 				<span class="mdl-layout-title">Grades</span>
 			</div>
 			<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-				<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Grades</a>
+				<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Individual</a>
 				<a href="#fixed-tab-2" class="mdl-layout__tab">Groups</a>
 				<a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
 			</div>
@@ -151,29 +152,16 @@
 						New assignment
 					</button>
 
-					<!--<form ng-submit="tbl.newAssignment()" class="mdl-cell mdl-cell&#45;&#45;4-col">-->
-						<!--<div class="mdl-textfield mdl-js-textfield mdl-textfield&#45;&#45;expandable">-->
-							<!--<label class="mdl-button mdl-js-button mdl-button&#45;&#45;icon" for="sample6">-->
-								<!--<i class="material-icons">add</i>-->
-							<!--</label>-->
-							<!--<div class="mdl-textfield__expandable-holder">-->
-								<!--<input autocomplete="off" class="mdl-textfield__input" type="text" id="sample6" placeholder="New assignment" ng-model="tbl.assignment">-->
-								<!--<label class="mdl-textfield__label" for="sample6">Expandable Input</label>-->
-							<!--</div>-->
-						<!--</div>-->
-						<!--<input ng-show="false" type="submit">-->
-					<!--</form>-->
-
 					<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--12-col">
 						<thead>
 						<tr>
-							<th class="mdl-data-table__cell--non-numeric">Name</th>
+							<th class="mdl-data-table__cell--non-numeric mdl-badge mdl-badge--overlap" data-badge="{{tbl.selected.length}}">Name</th>
 							<th class="mdl-data-table__cell">Student code</th>
 							<th class="mdl-data-table__cell" ng-repeat="assignment in tbl.assignments track by $index">{{assignment}}</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="student in (tbl.students | filter:query)">
+						<tr ng-repeat="student in (tbl.students | filter:query)" ng-click="tbl.select(student)">
 							<td class="mdl-data-table__cell--non-numeric ">{{student.firstName}} {{student.lastName}}</td>
 							<td>{{student.code}}</td>
 							<td ng-repeat="ass in tbl.assignments track by $index">
