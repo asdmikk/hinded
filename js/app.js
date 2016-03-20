@@ -27,7 +27,7 @@ app.run(function ($rootScope) {
 
 app.controller('AppCtrl', function ($rootScope) {
 	this.currentUser = $rootScope.currenUser;
-	$rootScope.$on('userChanged', () => {
+	$rootScope.$on('userChanged', function () {
 		this.currentUser = $rootScope.currenUser;
 	});
 });
@@ -55,9 +55,9 @@ app.controller('LoginCtrl', function ($rootScope) {
 		}
 	};
 
-	this.getValidUser = (user) => {
+	this.getValidUser = function (user) {
 		var usr = undefined;
-		$rootScope.users.forEach(u => {
+		$rootScope.users.forEach(function (u) {
 			if (user.email === u.email && user.pass === u.pass) {
 				usr = u;
 			}
@@ -72,10 +72,10 @@ app.controller('RegisterCtrl', function ($rootScope) {
 	this.infoSet = true;
 	this.user = {};
 
-	$('.mdl-radio.student').click(() => {
+	$('.mdl-radio.student').click(function  () {
 		$(".student-code").show( "slow" );
 	});
-	$('.mdl-radio.teacher').click(() => {
+	$('.mdl-radio.teacher').click(function () {
 		$(".student-code").slideUp();
 	});
 
@@ -96,9 +96,9 @@ app.controller('RegisterCtrl', function ($rootScope) {
 		}
 	};
 
-	this.emailAvailable = (email) => {
+	this.emailAvailable = function (email) {
 		var avaialble = true;
-		$rootScope.users.forEach(u => {
+		$rootScope.users.forEach(function (u) {
 			if (email === u.email) {
 				console.log(email + "===" + u.email);
 				avaialble = false;
@@ -109,11 +109,41 @@ app.controller('RegisterCtrl', function ($rootScope) {
 });
 
 app.controller('TableCtrl', function ($rootScope) {
-	this.students = $rootScope.users.filter(u => u.status === 'student');
+	this.students = $rootScope.users.filter(function (u) { return u.status === 'student' });
 	this.assignments = $rootScope.assignments;
-	this.headers = ['Name', 'Student code'].concat(this.assignments);
+	//this.headers = ['Name', 'Student code'].concat(this.assignments);
 
 	this.edit = function (student) {
-		console.log(student)
-	}
+		if (this.newAssPopupVisible) {
+			return;
+		}
+		this.editPopupVisible = true;
+		this.currentStudent = student;
+
+	};
+
+	this.showPopup = function (name) {
+		if (name === 'new_ass') {
+			this.newAssPopupVisible = true;
+		} else if (name === 'edit') {
+			this.editPopupVisible = true;
+		}
+	};
+
+	this.create = function () {
+		if (this.newAssPopupVisible) {
+			$rootScope.assignments.push(this.newAssName);
+			this.assignments = $rootScope.assignments;
+			this.newAssPopupVisible = false;
+		}
+	};
+
+	this.save = function () {
+
+	};
+
+	this.cancel = function () {
+		this.newAssPopupVisible = false;
+		this.editPopupVisible = false;
+	};
 });

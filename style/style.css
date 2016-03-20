@@ -24,3 +24,16 @@ form .name {
 .name-row {
     /*width: 50px;*/
 }
+
+.add-assignment {
+    top: 10px;
+}
+
+.new-assignment {
+    align-items: center;
+    justify-content: center;
+}
+
+.dark {
+
+}
