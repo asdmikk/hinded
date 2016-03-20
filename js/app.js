@@ -114,11 +114,12 @@ app.controller('TableCtrl', function ($rootScope) {
 	//this.headers = ['Name', 'Student code'].concat(this.assignments);
 
 	this.edit = function (student) {
+		return;
 		if (this.newAssPopupVisible) {
 			return;
 		}
-		this.editPopupVisible = true;
 		this.currentStudent = student;
+		this.editPopupVisible = true;
 
 	};
 

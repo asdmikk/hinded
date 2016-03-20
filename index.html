@@ -121,7 +121,7 @@
 			<section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
 				<div ng-controller="TableCtrl as tbl" class="page-content mdl-grid">
 					<!--New assignment popup-->
-					<div ng-show="tbl.newAssPopupVisible" class="mdl-layout mdl-js-layout mdl-color--grey-100 new-assignment">
+					<div ng-show="tbl.newAssPopupVisible" class="mdl-layout mdl-js-layout mdl-color--grey-100 popup">
 						<div class="mdl-card mdl-shadow--16dp">
 							<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
 								<h2 class="mdl-card__title-text">New assignment</h2>
@@ -142,26 +142,30 @@
 						</div>
 					</div>
 					<!--Edit student popup-->
-					<div ng-show="tbl.editPopupVisible" class="mdl-layout mdl-js-layout mdl-color--grey-100 new-assignment">
-						<div class="mdl-card mdl-shadow--16dp">
-							<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-								<h2 class="mdl-card__title-text">{{tbl.currentStudent.firstName}} {{tbl.currentStudent.lastName}}</h2>
-							</div>
-							<div class="mdl-card__supporting-text">
-								<form ng-submit="tbl.save()">
-									<div ng-repeat="ass in tbl.assignments track by $index" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-										<input ng-model="tbl.newAssName" class="mdl-textfield__input" type="text" id="name" autocomplete="off"/>
-										<label class="mdl-textfield__label" for="name">Assignment name</label>
-									</div>
-									<input ng-show="false" type="submit">
-								</form>
-							</div>
-							<div class="mdl-card__actions mdl-card--border">
-								<button ng-click="tbl.save()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Save</button>
-								<button ng-click="tbl.cancel()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Cancel</button>
-							</div>
-						</div>
-					</div>
+					<!--<div ng-show="tbl.editPopupVisible" class="mdl-layout mdl-js-layout mdl-color&#45;&#45;grey-100 popup edit-popup">-->
+						<!--<div class="mdl-card mdl-shadow&#45;&#45;16dp">-->
+							<!--<div class="mdl-card__title mdl-color&#45;&#45;primary mdl-color-text&#45;&#45;white">-->
+								<!--<h2 class="mdl-card__title-text">{{tbl.currentStudent.firstName}} {{tbl.currentStudent.lastName}}</h2>-->
+							<!--</div>-->
+							<!--<div class="mdl-card__supporting-text">-->
+								<!--<form ng-submit="tbl.save()">-->
+									<!--<div ng-repeat="ass in tbl.assignments track by $index" class="mdl-grid row">-->
+										<!--<span class="mdl-cell mdl-cell&#45;&#45;4-col ass-name">{{ass}}</span>-->
+										<!--<div class="mdl-textfield mdl-js-textfield mdl-cell mdl-cell&#45;&#45;8-col ass-grade">-->
+											<!--<input class="mdl-textfield__input" type="number" pattern="-?[0-9]*(\.[0-9]+)?" id="grade" value="{{tbl.currentStudent.grades[ass]}}">-->
+											<!--&lt;!&ndash;<label class="mdl-textfield__label" for="grade">{{ass}}</label>&ndash;&gt;-->
+											<!--<span class="mdl-textfield__error">Grade is not a number!</span>-->
+										<!--</div>-->
+									<!--</div>-->
+									<!--<input ng-show="false" type="submit">-->
+								<!--</form>-->
+							<!--</div>-->
+							<!--<div class="mdl-card__actions mdl-card&#45;&#45;border">-->
+								<!--<button ng-click="tbl.save()" class="mdl-button mdl-button&#45;&#45;colored mdl-js-button mdl-js-ripple-effect">Save</button>-->
+								<!--<button ng-click="tbl.cancel()" class="mdl-button mdl-button&#45;&#45;colored mdl-js-button mdl-js-ripple-effect">Cancel</button>-->
+							<!--</div>-->
+						<!--</div>-->
+					<!--</div>-->
 
 
 					<!--<input type="text" placeholder="Search.." ng-model="query">-->
@@ -171,7 +175,7 @@
 						<label class="mdl-textfield__label" for="sample1">Search...</label>
 					</div>
 
-					<button ng-click="tbl.showPopup()" class="mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--4-col add-assignment">
+					<button ng-click="tbl.showPopup('new_ass')" class="mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--4-col add-assignment">
 						New assignment
 					</button>
 
@@ -200,7 +204,12 @@
 						<tr ng-repeat="student in (tbl.students | filter:query)" ng-click="tbl.edit(student)">
 							<td class="mdl-data-table__cell--non-numeric ">{{student.firstName}} {{student.lastName}}</td>
 							<td>{{student.code}}</td>
-							<td ng-repeat="ass in tbl.assignments track by $index">{{student.grades[ass]}}</td>
+							<td ng-repeat="ass in tbl.assignments track by $index">
+								<!--<div class="mdl-textfield mdl-js-textfield ass-grade">-->
+									<!--<input class="mdl-textfield__input" type="number" id="sample1" value="{{student.grades[ass]}}">-->
+								<!--</div>-->
+								<input type="number" class="ass-grade" value="{{student.grades[ass]}}"/>
+							</td>
 						</tr>
 						</tbody>
 					</table>

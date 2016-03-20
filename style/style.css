@@ -29,11 +29,30 @@ form .name {
     top: 10px;
 }
 
-.new-assignment {
+.popup {
     align-items: center;
     justify-content: center;
 }
 
-.dark {
-
+.edit-popup .row {
+    height: 50px;
 }
+
+.ass-name {
+    display: flex;
+    align-items: center;
+}
+
+/*.ass-grade {*/
+    /*display: flex;*/
+    /*align-items: center;*/
+/*}*/
+
+.ass-grade {
+    width: 25px;
+    padding: 0;
+    font-size: 12px;
+    text-align: center;
+    border: none;
+}
+
