@@ -8,13 +8,8 @@
 	<link rel="stylesheet" href="bower_components/material-design-lite/material.min.css">
 	<script src="bower_components/material-design-lite/material.min.js"></script>
 
-	<!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">-->
-	<!--<link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css">-->
-	<!--<script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>-->
-
 	<link rel="stylesheet" href="style/style.css">
 
-	<!--<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>-->
 	<script src="bower_components/angular/angular.min.js"></script>
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>
 	<script src="bower_components/underscore/underscore-min.js"></script>
@@ -25,22 +20,11 @@
 
 <body ng-controller="AppCtrl as app">
 
-	<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
-				mdl-layout--fixed-tabs">
-		<header ng-show="app.currentUser"  class="mdl-layout__header">
-			<div class="mdl-layout__header-row">
-				<span class="mdl-layout-title">Grades</span>
-			</div>
-			<div class="mdl-layout__tab-bar mdl-js-ripple-effect">
-				<a href="#fixed-tab-1" class="mdl-layout__tab is-active">Individual</a>
-				<a href="#fixed-tab-2" class="mdl-layout__tab">Groups</a>
-				<a href="#fixed-tab-3" class="mdl-layout__tab">Tab 3</a>
-			</div>
-		</header>
-		<div class="mdl-layout__drawer">
-			<span class="mdl-layout-title">Title</span>
-		</div>
+	<!-- INTRO -->
+	<div ng-show="!app.currentUser" class="mdl-layout mdl-js-layout intro-view">
 		<main ng-controller="IntroCtrl as intro" ng-show="!app.currentUser" class="mdl-layout__content login">
+
+			<!-- Log in -->
 			<div ng-controller="LoginCtrl as log" ng-show="intro.login" class="mdl-layout mdl-js-layout mdl-color--grey-100 login-container">
 				<div class="mdl-card mdl-shadow--6dp">
 					<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
@@ -67,6 +51,8 @@
 					</div>
 				</div>
 			</div>
+
+			<!-- Register -->
 			<div ng-controller="RegisterCtrl as reg" ng-show="!intro.login" class="mdl-layout mdl-js-layout mdl-color--grey-100 login-container">
 				<div class="mdl-card mdl-shadow--6dp">
 					<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
@@ -118,9 +104,29 @@
 				</div>
 			</div>
 		</main>
-		<main ng-show="app.currentUser" class="mdl-layout__content">
+
+	</div>
+
+
+
+	<!-- TEACHER -->
+	<div ng-show="app.currentUser.status === 'teacher'" class="mdl-layout mdl-js-layout mdl-layout--fixed-header teacher-view">
+		<header class="mdl-layout__header">
+			<div class="mdl-layout__header-row">
+				<span class="mdl-layout-title">Grades</span>
+			</div>
+		</header>
+		<div class="mdl-layout__drawer">
+			<span class="mdl-layout-title">Menu</span>
+			<nav class="mdl-navigation">
+				<a class="mdl-navigation__link" href="" ng-click="app.logout()">Log out</a>
+			</nav>
+		</div>
+
+		<main class="mdl-layout__content">
 			<section class="mdl-layout__tab-panel is-active" id="fixed-tab-1">
 				<div ng-controller="TableCtrl as tbl" class="page-content mdl-grid">
+
 					<!--New assignment popup-->
 					<div ng-show="tbl.newAssPopupVisible" class="mdl-layout mdl-js-layout mdl-color--grey-100 popup">
 						<div class="mdl-card mdl-shadow--16dp">
@@ -148,24 +154,27 @@
 						<label class="mdl-textfield__label" for="sample1">Search...</label>
 					</div>
 
-					<button ng-click="tbl.showPopup('new_ass')" class="mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--4-col add-assignment">
+					<button ng-click="tbl.showPopup('new_ass')" class="mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--2-col add-assignment">
 						New assignment
 					</button>
+					<button ng-click="tbl.selectMultiple()" class="mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--2-col add-assignment" ng-class="{'mdl-button--raised': tbl.multiselect}">
+						Select multiple
+					</button>
 
-					<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+					<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--12-col students-table" ng-class="{'mdl-badge mdl-badge--overlap': tbl.multiselect}" data-badge="{{tbl.selected.length}}">
 						<thead>
 						<tr>
-							<th class="mdl-data-table__cell--non-numeric mdl-badge mdl-badge--overlap" data-badge="{{tbl.selected.length}}">Name</th>
+							<th class="mdl-data-table__cell--non-numeric">Name</th>
 							<th class="mdl-data-table__cell">Student code</th>
 							<th class="mdl-data-table__cell" ng-repeat="assignment in tbl.assignments track by $index">{{assignment}}</th>
 						</tr>
 						</thead>
 						<tbody>
-						<tr ng-repeat="student in (tbl.students | filter:query)" ng-click="tbl.select(student)">
+						<tr ng-repeat="student in (tbl.students | filter:query)" ng-class="{'selected': tbl.studentSelected(student)}" ng-click="tbl.select(student)">
 							<td class="mdl-data-table__cell--non-numeric ">{{student.firstName}} {{student.lastName}}</td>
 							<td>{{student.code}}</td>
 							<td ng-repeat="ass in tbl.assignments track by $index">
-								<input type="number" class="ass-grade" ng-model="grade" ng-change="tbl.updateStudent(student, ass, grade)" value="{{student.grades[ass]}}"/>
+								<input ng-click="$event.stopPropagation()" type="number" class="ass-grade" ng-model="grade" ng-change="tbl.updateStudent(student, ass, grade)" value="{{student.grades[ass]}}"/>
 							</td>
 						</tr>
 						</tbody>
@@ -178,6 +187,72 @@
 			</section>
 			<section class="mdl-layout__tab-panel" id="fixed-tab-3">
 				<div class="page-content"><!-- Your content goes here -->Teed</div>
+			</section>
+		</main>
+
+	</div>
+
+
+	<!-- STUDENT -->
+	<div ng-show="app.currentUser.status === 'student'" class="mdl-layout mdl-js-layout mdl-layout--fixed-header student-view">
+		<header class="mdl-layout__header">
+			<div class="mdl-layout__header-row">
+				<span class="mdl-layout-title">Grades</span>
+			</div>
+		</header>
+		<div class="mdl-layout__drawer">
+			<span class="mdl-layout-title">Menu</span>
+			<nav class="mdl-navigation">
+				<a class="mdl-navigation__link" href="" ng-click="app.logout()">Log out</a>
+			</nav>
+		</div>
+
+		<main class="mdl-layout__content">
+			<section class="mdl-layout__tab-panel is-active">
+				<div ng-controller="GradesCtrl as grades" class="page-content mdl-grid grades">
+
+					<!--Submit popup-->
+					<div ng-show="grades.currentAssignment" class="mdl-layout mdl-js-layout mdl-color--grey-100 popup">
+						<div class="mdl-card mdl-shadow--16dp">
+							<div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+								<h2 class="mdl-card__title-text">{{grades.currentAssignment}}</h2>
+							</div>
+							<div class="mdl-card__supporting-text">
+								<form id="file-form" ng-submit="grades.submit()">
+									<div class="mdl-textfield mdl-js-textfield">
+										<input id="file-input" class="file-button" type="file" name="file"/>
+									</div>
+									<div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+										<textarea class="mdl-textfield__input" type="text" rows= "3" id="sample5" ng-model="grades.comments"></textarea>
+										<label class="mdl-textfield__label" for="sample5">Comments...</label>
+									</div>
+									<!--<input ng-show="false" type="submit">-->
+								</form>
+							</div>
+							<div class="mdl-card__actions mdl-card--border">
+								<button ng-click="grades.submit()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Submit work</button>
+								<button ng-click="grades.cancel()" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Cancel</button>
+							</div>
+						</div>
+					</div>
+
+
+					<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp mdl-cell mdl-cell--12-col">
+						<thead>
+						<tr>
+							<th class="mdl-data-table__cell--non-numeric mdl-badge mdl-badge--overlap">Assignment</th>
+							<th class="mdl-data-table__cell">Grade</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr ng-repeat="assignment in grades.assignments" ng-click="grades.submitAssignment($index)">
+							<td class="mdl-data-table__cell--non-numeric ">{{assignment}}</td>
+							<td>{{grades.grades[assignment]}}</td>
+						</tr>
+						</tbody>
+					</table>
+
+				</div>
 			</section>
 		</main>
 	</div>

@@ -1,8 +1,44 @@
 var app = angular.module('GradesApp', []);
 
 app.run(function ($rootScope) {
-	$rootScope.currenUser;
+	//$rootScope.currenUser;
 	$rootScope.assignments = ['1 KT', '2 KT', 'Lisapunktid', 'Eksam'];
+	//var grades = [
+	//	{name: '1 KT', grade: 5},
+	//	{name: '2 KT', grade: 1},
+	//	{name: 'Lisapunktid', grade: 9},
+	//	{name: 'Eksam', grade: 1}
+	//];
+	//var grades = [
+	//	{name: '1 KT', grade: 3},
+	//	{name: '2 KT', grade: 3},
+	//	{name: 'Lisapunktid', grade: 3},
+	//	{name: 'Eksam', grade: 9}
+	//];
+	//var grades1 = [
+	//	{name: '1 KT', grade: 4},
+	//	{name: '2 KT', grade: 8},
+	//	{name: 'Lisapunktid', grade: 1},
+	//	{name: 'Eksam', grade: 1}
+	//];
+	//var grades2 = [
+	//	{name: '1 KT', grade: 1},
+	//	{name: '2 KT', grade: 5},
+	//	{name: 'Lisapunktid', grade: 5},
+	//	{name: 'Eksam', grade: 4}
+	//];
+	//var grades3 = [
+	//	{name: '1 KT', grade: 2},
+	//	{name: '2 KT', grade: 1},
+	//	{name: 'Lisapunktid', grade: 3},
+	//	{name: 'Eksam', grade: 7}
+	//];
+	//var grades4 = [
+	//	{name: '1 KT', grade: 5},
+	//	{name: '2 KT', grade: 2},
+	//	{name: 'Lisapunktid', grade: 3},
+	//	{name: 'Eksam', grade: 7}
+	//];
 	var grades = {
 		'1 KT': 5,
 		'2 KT': 2,
@@ -13,7 +49,7 @@ app.run(function ($rootScope) {
 		'1 KT': 1,
 		'2 KT': 4,
 		'Lisapunktid': 5,
-		'Eksam': 5
+
 	};
 	var grades2 = {
 		'1 KT': 7,
@@ -43,16 +79,53 @@ app.run(function ($rootScope) {
 		{
 			id: 123421, email: 't@t.tt', firstName: 'Teacher', lastName: 'T', pass: 't', status: 'teacher'
 		}];
+
 	$rootScope.assignments = ['1 KT', '2 KT', 'Lisapunktid', 'Eksam'];
 
-	$rootScope.currenUser = $rootScope.users[1];
+	$rootScope.currenUser = $rootScope.users[5];
+
+	//$rootScope.setView = function () {
+	//	if ($rootScope.currenUser.status === 'student') {
+	//		$rootScope.studentView();
+	//	} else if ($rootScope.currenUser.status === 'teacher') {
+	//		$rootScope.teacherView();
+	//	} else {
+	//		$rootScope.introView();
+	//	}
+	//};
+	//$rootScope.studentView = function () {
+	//	$('.intro-view').hide();
+	//	$('.teacher-view').hide();
+	//	$('.student-view').show();
+	//};
+	//$rootScope.teacherView = function () {
+	//	$('.intro-view').hide();
+	//	$('.teacher-view').show();
+	//	$('.student-view').hide();
+	//};
+	//$rootScope.introView = function () {
+	//	$('.intro-view').show();
+	//	$('.teacher-view').hide();
+	//	$('.student-view').hide();
+	//}
+	//
+	//$rootScope.setView();
+
 });
 
-app.controller('AppCtrl', function ($rootScope) {
+app.controller('AppCtrl', function ($scope, $rootScope) {
 	this.currentUser = $rootScope.currenUser;
-	$rootScope.$on('userChanged', function () {
+	$scope.$on('userChanged', function () {
 		this.currentUser = $rootScope.currenUser;
+		console.log('user', this.currentUser);
+		//$rootScope.setView();
 	});
+
+	this.logout = function () {
+		$rootScope.currentUser = undefined;
+		this.currentUser = $rootScope.currentUser;
+		//$rootScope.setView();
+	}
 });
 
 app.controller('IntroCtrl', function ($rootScope) {
@@ -135,7 +208,8 @@ app.controller('TableCtrl', function ($rootScope) {
 	this.students = $rootScope.users.filter(function (u) { return u.status === 'student' });
 	this.assignments = $rootScope.assignments;
 	//this.headers = ['Name', 'Student code'].concat(this.assignments);
-
+	this.selected = [];
+	this.multiselect = false;
 	this.tab = 'all';
 
 	this.setTab = function (tab) {
@@ -152,16 +226,33 @@ app.controller('TableCtrl', function ($rootScope) {
 
 	};
 
-	this.selected = [];
+	this.selectMultiple = function () {
+		this.multiselect = !this.multiselect;
+		this.selected = [];
+	};
+
 	this.select = function (student) {
+		if (!this.multiselect) return;
 		if (!_.contains(this.selected, student)) {
 			this.selected.push(student);
-			console.log(this.selected);
+		} else {
+			this.selected = _.without(this.selected, student);
 		}
 	};
 
+	this.studentSelected = function (student) {
+		var b = _.contains(this.selected, student);
+		return b;
+	};
+
 	this.updateStudent = function (student, ass, grade) {
-		student.grades[ass] = grade;
+		if (this.multiselect && this.studentSelected(student)) {
+			this.selected.forEach(function (s) {
+				s.grades[ass] = grade;
+			});
+		} else {
+			student.grades[ass] = grade;
+		}
 	};
 
 	this.showPopup = function (name) {
@@ -187,4 +278,33 @@ app.controller('TableCtrl', function ($rootScope) {
 		this.newAssPopupVisible = false;
 		this.editPopupVisible = false;
 	};
+});
+
+app.controller('GradesCtrl', function ($rootScope) {
+	this.assignments = $rootScope.assignments;
+	this.grades = $rootScope.currenUser.grades;
+
+	this.submit = function () {
+		var file = $('#file-input')[0].files[0];
+		var comments = this.comments;
+		$('#file-input').val('');
+		this.comments = undefined;
+		if (file) {
+			console.log(file);
+			console.log(comments);
+			// TODO: UPLOAD FILE
+		}
+		this.currentAssignment = undefined;
+	};
+
+	this.submitAssignment = function (index) {
+		this.currentAssignment = this.assignments[index];
+		console.log(this.currentAssignment)
+	};
+
+	this.cancel = function () {
+		this.currentAssignment = undefined;
+	}
+
+
 });
